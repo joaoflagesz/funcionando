@@ -8,15 +8,39 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie } from "recharts";
-import { Plus, DollarSign, TrendingUp, Wallet, Users, Target, CheckCircle2, Clock3, LayoutDashboard, Briefcase, Funnel, Search, Pencil, Trash2, FileText, Globe, Download, Save, LogOut, UserCircle2, ShieldCheck, Sparkles, RefreshCcw } from "lucide-react";
+import {
+  Plus,
+  DollarSign,
+  TrendingUp,
+  Wallet,
+  Users,
+  Target,
+  CheckCircle2,
+  LayoutDashboard,
+  Briefcase,
+  Funnel,
+  Search,
+  Pencil,
+  Trash2,
+  FileText,
+  Globe,
+  Download,
+  Save,
+  LogOut,
+  UserCircle2,
+  ShieldCheck,
+  Sparkles,
+  RefreshCcw,
+} from "lucide-react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 const HAS_SUPABASE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 const supabase = HAS_SUPABASE ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
 const DEMO_STORAGE_KEY = "painel-sites-demo-db-v2";
 const DEMO_SETTINGS_KEY = "painel-sites-demo-settings-v2";
 
@@ -105,7 +129,11 @@ const seedData = [
   },
 ];
 
-const moeda = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v || 0));
+const moeda = (v) =>
+  new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Number(v || 0));
 
 function statusBadge(status) {
   const map = {
@@ -121,11 +149,81 @@ function statusBadge(status) {
 }
 
 function makeProposalText(registro, empresa) {
-  return `PROPOSTA COMERCIAL\n\nPrestador: ${empresa.nome}\nE-mail: ${empresa.email}\nTelefone: ${empresa.telefone}\nSite: ${empresa.site}\nCidade: ${empresa.cidade}\n\nCliente: ${registro.cliente}\nE-mail: ${registro.email || "Não informado"}\nTelefone: ${registro.telefone || "Não informado"}\nData: ${new Date(registro.data).toLocaleDateString("pt-BR")}\n\nObjeto:\nDesenvolvimento de ${registro.tipo}.\n\nEscopo resumido:\n- Estrutura e design profissional\n- Responsivo para celular\n- Botões de contato / WhatsApp\n- Ajustes básicos de SEO\n- Publicação final\n\nPrazo estimado:\n${registro.prazo || "A combinar"}\n\nInvestimento:\nValor do projeto: ${moeda(registro.valor)}\nMensalidade/manutenção: ${moeda(registro.mensalidade)}\n\nObservações:\n${registro.observacoes || "Sem observações adicionais."}\n\nValidade da proposta:\n7 dias corridos a partir da emissão.\n\nAssinatura:\n${empresa.nome}`;
+  return `PROPOSTA COMERCIAL
+
+Prestador: ${empresa.nome}
+E-mail: ${empresa.email}
+Telefone: ${empresa.telefone}
+Site: ${empresa.site}
+Cidade: ${empresa.cidade}
+
+Cliente: ${registro.cliente}
+E-mail: ${registro.email || "Não informado"}
+Telefone: ${registro.telefone || "Não informado"}
+Data: ${new Date(registro.data).toLocaleDateString("pt-BR")}
+
+Objeto:
+Desenvolvimento de ${registro.tipo}.
+
+Escopo resumido:
+- Estrutura e design profissional
+- Responsivo para celular
+- Botões de contato / WhatsApp
+- Ajustes básicos de SEO
+- Publicação final
+
+Prazo estimado:
+${registro.prazo || "A combinar"}
+
+Investimento:
+Valor do projeto: ${moeda(registro.valor)}
+Mensalidade/manutenção: ${moeda(registro.mensalidade)}
+
+Observações:
+${registro.observacoes || "Sem observações adicionais."}
+
+Validade da proposta:
+7 dias corridos a partir da emissão.
+
+Assinatura:
+${empresa.nome}`;
 }
 
 function makeContractText(registro, empresa) {
-  return `CONTRATO DE PRESTAÇÃO DE SERVIÇOS\n\nCONTRATADA: ${empresa.nome}, contato ${empresa.email}, ${empresa.telefone}, ${empresa.cidade}.\nCONTRATANTE: ${registro.cliente}, e-mail ${registro.email || "não informado"}, telefone ${registro.telefone || "não informado"}.\n\n1. OBJETO\nA CONTRATADA prestará serviços de desenvolvimento de ${registro.tipo}.\n\n2. ESCOPO\nInclui criação, ajustes visuais, responsividade, configuração de formulários e publicação final, conforme alinhado entre as partes.\n\n3. PRAZO\nO prazo estimado para entrega é de ${registro.prazo || "a combinar"}, contado após envio de todos os materiais necessários pelo CONTRATANTE.\n\n4. VALORES\nValor do projeto: ${moeda(registro.valor)}.\nMensalidade/manutenção: ${moeda(registro.mensalidade)} ${Number(registro.mensalidade) > 0 ? "por mês." : "não aplicável."}\n\n5. OBRIGAÇÕES DO CONTRATANTE\nEnviar textos, imagens, acessos e aprovações em tempo hábil para execução do projeto.\n\n6. OBRIGAÇÕES DA CONTRATADA\nExecutar o serviço com zelo técnico e manter comunicação sobre o andamento do projeto.\n\n7. CANCELAMENTO\nEm caso de cancelamento após início da execução, valores proporcionais ao trabalho já realizado poderão ser retidos.\n\n8. DISPOSIÇÕES GERAIS\nEste documento representa um modelo inicial e pode ser ajustado com dados fiscais e cláusulas jurídicas específicas antes da assinatura final.\n\nData: ${new Date(registro.data).toLocaleDateString("pt-BR")}\n\nCONTRATADA: ${empresa.nome}\nCONTRATANTE: ${registro.cliente}`;
+  return `CONTRATO DE PRESTAÇÃO DE SERVIÇOS
+
+CONTRATADA: ${empresa.nome}, contato ${empresa.email}, ${empresa.telefone}, ${empresa.cidade}.
+CONTRATANTE: ${registro.cliente}, e-mail ${registro.email || "não informado"}, telefone ${registro.telefone || "não informado"}.
+
+1. OBJETO
+A CONTRATADA prestará serviços de desenvolvimento de ${registro.tipo}.
+
+2. ESCOPO
+Inclui criação, ajustes visuais, responsividade, configuração de formulários e publicação final, conforme alinhado entre as partes.
+
+3. PRAZO
+O prazo estimado para entrega é de ${registro.prazo || "a combinar"}, contado após envio de todos os materiais necessários pelo CONTRATANTE.
+
+4. VALORES
+Valor do projeto: ${moeda(registro.valor)}.
+Mensalidade/manutenção: ${moeda(registro.mensalidade)} ${Number(registro.mensalidade) > 0 ? "por mês." : "não aplicável."}
+
+5. OBRIGAÇÕES DO CONTRATANTE
+Enviar textos, imagens, acessos e aprovações em tempo hábil para execução do projeto.
+
+6. OBRIGAÇÕES DA CONTRATADA
+Executar o serviço com zelo técnico e manter comunicação sobre o andamento do projeto.
+
+7. CANCELAMENTO
+Em caso de cancelamento após início da execução, valores proporcionais ao trabalho já realizado poderão ser retidos.
+
+8. DISPOSIÇÕES GERAIS
+Este documento representa um modelo inicial e pode ser ajustado com dados fiscais e cláusulas jurídicas específicas antes da assinatura final.
+
+Data: ${new Date(registro.data).toLocaleDateString("pt-BR")}
+
+CONTRATADA: ${empresa.nome}
+CONTRATANTE: ${registro.cliente}`;
 }
 
 function downloadTextFile(filename, content) {
@@ -162,6 +260,7 @@ function AuthScreen({ onAuthSuccess }) {
   const handleAuth = async () => {
     setLoading(true);
     setMessage("");
+
     try {
       if (!HAS_SUPABASE) {
         handleDemoEnter();
@@ -175,7 +274,7 @@ function AuthScreen({ onAuthSuccess }) {
       } else {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        setMessage("Conta criada. Se seu projeto Supabase exigir confirmação por e-mail, confirme antes de entrar.");
+        setMessage("Conta criada. Se seu Supabase exigir confirmação por e-mail, confirme antes de entrar.");
         if (data.user) onAuthSuccess(data.user);
       }
     } catch (err) {
@@ -193,16 +292,37 @@ function AuthScreen({ onAuthSuccess }) {
             <Sparkles className="h-4 w-4" />
             Painel premium para vender sites
           </div>
+
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-6xl">Mais cor, mais controle, mais lucro.</h1>
+            <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-6xl">
+              Mais cor, mais controle, mais lucro.
+            </h1>
             <p className="mt-4 max-w-xl text-lg text-slate-600">
               CRM, financeiro, propostas, contratos e hospedagem pronta para virar seu sistema real de vendas de sites.
             </p>
           </div>
+
           <div className="grid gap-4 md:grid-cols-3">
-            <Card className="rounded-3xl border-0 bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-xl"><CardContent className="p-5"><div className="text-sm opacity-90">Faturamento</div><div className="mt-2 text-2xl font-bold">Tudo centralizado</div></CardContent></Card>
-            <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl"><CardContent className="p-5"><div className="text-sm opacity-90">Lucro</div><div className="mt-2 text-2xl font-bold">Cálculo automático</div></CardContent></Card>
-            <Card className="rounded-3xl border-0 bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white shadow-xl"><CardContent className="p-5"><div className="text-sm opacity-90">Pipeline</div><div className="mt-2 text-2xl font-bold">Do lead à entrega</div></CardContent></Card>
+            <Card className="rounded-3xl border-0 bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-xl">
+              <CardContent className="p-5">
+                <div className="text-sm opacity-90">Faturamento</div>
+                <div className="mt-2 text-2xl font-bold">Tudo centralizado</div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl">
+              <CardContent className="p-5">
+                <div className="text-sm opacity-90">Lucro</div>
+                <div className="mt-2 text-2xl font-bold">Cálculo automático</div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-3xl border-0 bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white shadow-xl">
+              <CardContent className="p-5">
+                <div className="text-sm opacity-90">Pipeline</div>
+                <div className="mt-2 text-2xl font-bold">Do lead à entrega</div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -210,28 +330,55 @@ function AuthScreen({ onAuthSuccess }) {
           <CardHeader>
             <CardTitle className="text-2xl">{mode === "login" ? "Entrar" : "Criar conta"}</CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>E-mail</Label>
-              <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@email.com" className="rounded-2xl" />
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="voce@email.com"
+                className="rounded-2xl"
+              />
             </div>
+
             <div className="space-y-2">
               <Label>Senha</Label>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="********" className="rounded-2xl" />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="********"
+                className="rounded-2xl"
+              />
             </div>
+
             {message && <div className="rounded-2xl bg-amber-50 p-3 text-sm text-amber-700">{message}</div>}
-            <Button onClick={handleAuth} disabled={loading} className="w-full rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 py-6 text-base text-white shadow-lg hover:opacity-95">
+
+            <Button
+              onClick={handleAuth}
+              disabled={loading}
+              className="w-full rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 py-6 text-base text-white shadow-lg hover:opacity-95"
+            >
               <ShieldCheck className="mr-2 h-4 w-4" />
               {loading ? "Carregando..." : mode === "login" ? "Entrar" : "Criar conta"}
             </Button>
+
             <Button variant="outline" onClick={handleDemoEnter} className="w-full rounded-2xl py-6 text-base">
               Testar em modo demo
             </Button>
-            <button onClick={() => setMode(mode === "login" ? "register" : "login")} className="w-full text-sm text-slate-600 hover:text-slate-900">
+
+            <button
+              onClick={() => setMode(mode === "login" ? "register" : "login")}
+              className="w-full text-sm text-slate-600 hover:text-slate-900"
+            >
               {mode === "login" ? "Não tem conta? Criar agora" : "Já tem conta? Entrar"}
             </button>
+
             <div className="rounded-2xl bg-slate-50 p-3 text-xs text-slate-500">
-              {HAS_SUPABASE ? "Supabase conectado: autenticação e banco ativos." : "Sem variáveis do Supabase: o app roda em modo demo e salva no navegador para você testar tudo agora."}
+              {HAS_SUPABASE
+                ? "Supabase conectado: autenticação e banco ativos."
+                : "Sem variáveis do Supabase: o app roda em modo demo e salva no navegador para você testar tudo agora."}
             </div>
           </CardContent>
         </Card>
@@ -258,8 +405,10 @@ export default function App() {
   const bootstrapDemo = () => {
     const existingUser = JSON.parse(localStorage.getItem("painel-sites-demo-user") || "null");
     if (existingUser) setUser(existingUser);
+
     const saved = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || "null");
     const savedSettings = JSON.parse(localStorage.getItem(DEMO_SETTINGS_KEY) || "null");
+
     setRegistros(saved || seedData);
     if (savedSettings?.empresa) setEmpresa(savedSettings.empresa);
     if (savedSettings?.metaMes) setMetaMes(savedSettings.metaMes);
@@ -267,8 +416,14 @@ export default function App() {
   };
 
   const loadData = async (currentUser) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      setRegistros([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
+
     try {
       if (!HAS_SUPABASE) {
         bootstrapDemo();
@@ -284,8 +439,8 @@ export default function App() {
       if (settingsError && settingsError.code !== "PGRST116") throw settingsError;
 
       setRegistros(vendas || []);
-      if (settings?.empresa_json) setEmpresa(settings.empresa_json);
-      if (settings?.meta_mes) setMetaMes(settings.meta_mes);
+      setEmpresa(settings?.empresa_json || initialEmpresa);
+      setMetaMes(settings?.meta_mes || 10000);
     } catch (err) {
       setInfo(err.message || "Erro ao carregar dados.");
     } finally {
@@ -294,32 +449,61 @@ export default function App() {
   };
 
   useEffect(() => {
-    const start = async () => {
-      if (!HAS_SUPABASE) {
-        bootstrapDemo();
-        return;
-      }
+    let mounted = true;
+    let subscription = null;
 
-      const { data } = await supabase.auth.getSession();
-      const currentUser = data.session?.user || null;
-      setUser(currentUser);
-      if (currentUser) await loadData(currentUser);
-      else setLoading(false);
+    const init = async () => {
+      try {
+        if (!HAS_SUPABASE) {
+          if (mounted) bootstrapDemo();
+          return;
+        }
 
-      const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-        const nextUser = session?.user || null;
-        setUser(nextUser);
-        if (nextUser) await loadData(nextUser);
-        else {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        const currentUser = data.session?.user || null;
+
+        if (!mounted) return;
+
+        setUser(currentUser);
+
+        if (currentUser) {
+          await loadData(currentUser);
+        } else {
           setRegistros([]);
           setLoading(false);
         }
-      });
 
-      return () => authListener.subscription.unsubscribe();
+        const listener = supabase.auth.onAuthStateChange(async (_event, session) => {
+          if (!mounted) return;
+
+          const nextUser = session?.user || null;
+          setUser(nextUser);
+
+          if (nextUser) {
+            await loadData(nextUser);
+          } else {
+            setRegistros([]);
+            setLoading(false);
+          }
+        });
+
+        subscription = listener.data.subscription;
+      } catch (err) {
+        if (mounted) {
+          setInfo(err.message || "Erro ao iniciar.");
+          setLoading(false);
+        }
+      }
     };
 
-    start();
+    init();
+
+    return () => {
+      mounted = false;
+      if (subscription) subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -340,6 +524,7 @@ export default function App() {
         .join(" ")
         .toLowerCase()
         .includes(busca.toLowerCase());
+
       const matchStatus = filtroStatus === "Todos" ? true : r.status === filtroStatus;
       return matchBusca && matchStatus;
     });
@@ -354,43 +539,67 @@ export default function App() {
     const leads = registros.filter((r) => ["Lead", "Proposta enviada", "Negociação"].includes(r.status)).length;
     const convertidos = registros.filter((r) => ["Fechado", "Em andamento", "Entregue"].includes(r.status)).length;
     const taxa = registros.length ? (convertidos / registros.length) * 100 : 0;
+
     return { faturamento, custos, lucro, recorrencia, leads, taxa };
   }, [registros]);
 
   const graficoMensal = useMemo(() => {
     const mapa = new Map();
+
     registros.forEach((r) => {
       const chave = new Date(r.data).toLocaleDateString("pt-BR", { month: "short" });
       const atual = mapa.get(chave) || { mes: chave, faturamento: 0, lucro: 0 };
+
       if (["Fechado", "Em andamento", "Entregue"].includes(r.status)) {
         atual.faturamento += Number(r.valor || 0);
         atual.lucro += Number(r.valor || 0) - Number(r.custo || 0);
       }
+
       mapa.set(chave, atual);
     });
+
     return Array.from(mapa.values());
   }, [registros]);
 
-  const distribuicaoStatus = useMemo(() => statusOptions.map((status) => ({ name: status, value: registros.filter((r) => r.status === status).length })).filter((item) => item.value > 0), [registros]);
+  const distribuicaoStatus = useMemo(
+    () =>
+      statusOptions
+        .map((status) => ({
+          name: status,
+          value: registros.filter((r) => r.status === status).length,
+        }))
+        .filter((item) => item.value > 0),
+    [registros]
+  );
+
   const progressoMeta = Math.min((metricas.faturamento / Number(metaMes || 1)) * 100, 100);
 
   const resetForm = () => {
-    setForm({ ...initialForm, responsavel: user?.email?.split("@")[0] || "João" });
+    setForm({
+      ...initialForm,
+      responsavel: user?.email?.split("@")[0] || "João",
+    });
     setEditandoId(null);
   };
 
   const saveSettings = async () => {
     try {
       if (!user) return;
+
       if (!HAS_SUPABASE) {
         setInfo("Configurações salvas no modo demo.");
         return;
       }
-      const { error } = await supabase.from("app_settings").upsert({
-        user_id: user.id,
-        meta_mes: Number(metaMes || 0),
-        empresa_json: empresa,
-      }, { onConflict: "user_id" });
+
+      const { error } = await supabase.from("app_settings").upsert(
+        {
+          user_id: user.id,
+          meta_mes: Number(metaMes || 0),
+          empresa_json: empresa,
+        },
+        { onConflict: "user_id" }
+      );
+
       if (error) throw error;
       setInfo("Configurações salvas com sucesso.");
     } catch (err) {
@@ -403,6 +612,7 @@ export default function App() {
       setInfo("Preencha pelo menos cliente e valor.");
       return;
     }
+
     setSaving(true);
     setInfo("");
 
@@ -435,6 +645,7 @@ export default function App() {
         if (error) throw error;
         await loadData(user);
       }
+
       resetForm();
       setModalOpen(false);
       setInfo(editandoId ? "Registro atualizado." : "Registro criado.");
@@ -468,6 +679,7 @@ export default function App() {
   const handleDelete = async (id) => {
     const ok = window.confirm("Tem certeza que deseja excluir este registro?");
     if (!ok) return;
+
     try {
       if (!HAS_SUPABASE) {
         setRegistros((prev) => prev.filter((item) => item.id !== id));
@@ -476,6 +688,7 @@ export default function App() {
         if (error) throw error;
         await loadData(user);
       }
+
       if (editandoId === id) resetForm();
       setInfo("Registro excluído.");
     } catch (err) {
@@ -484,14 +697,25 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    if (!HAS_SUPABASE) {
-      localStorage.removeItem("painel-sites-demo-user");
+    try {
+      setLoading(true);
+
+      if (!HAS_SUPABASE) {
+        localStorage.removeItem("painel-sites-demo-user");
+        setUser(null);
+        setRegistros([]);
+        setLoading(false);
+        return;
+      }
+
+      await supabase.auth.signOut();
       setUser(null);
-      bootstrapDemo();
-      return;
+      setRegistros([]);
+    } catch (err) {
+      setInfo(err.message || "Erro ao sair.");
+    } finally {
+      setLoading(false);
     }
-    await supabase.auth.signOut();
-    setUser(null);
   };
 
   const exportBackup = () => {
@@ -531,12 +755,37 @@ export default function App() {
               <h1 className="text-3xl font-black tracking-tight text-slate-900">Painel profissional de vendas</h1>
               <p className="mt-2 text-sm text-slate-500">Agora com visual mais forte, CRUD funcionando e suporte real a Supabase.</p>
             </div>
+
             <div className="flex flex-wrap items-center gap-3">
-              <Badge className="rounded-full border-0 bg-emerald-100 px-4 py-2 text-emerald-700">{HAS_SUPABASE ? "Banco online ativo" : "Modo demo ativo"}</Badge>
-              <Badge className="rounded-full border-0 bg-sky-100 px-4 py-2 text-sky-700"><UserCircle2 className="mr-2 h-4 w-4" />{user.email || "demo@painel.com"}</Badge>
-              <Button variant="outline" className="rounded-2xl" onClick={exportBackup}><Download className="mr-2 h-4 w-4" />Backup</Button>
-              <Button className="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 text-white" onClick={() => { resetForm(); setModalOpen(true); }}><Plus className="mr-2 h-4 w-4" />Novo registro</Button>
-              <Button variant="outline" className="rounded-2xl" onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" />Sair</Button>
+              <Badge className="rounded-full border-0 bg-emerald-100 px-4 py-2 text-emerald-700">
+                {HAS_SUPABASE ? "Banco online ativo" : "Modo demo ativo"}
+              </Badge>
+
+              <Badge className="rounded-full border-0 bg-sky-100 px-4 py-2 text-sky-700">
+                <UserCircle2 className="mr-2 h-4 w-4" />
+                {user.email || "demo@painel.com"}
+              </Badge>
+
+              <Button variant="outline" className="rounded-2xl" onClick={exportBackup}>
+                <Download className="mr-2 h-4 w-4" />
+                Backup
+              </Button>
+
+              <Button
+                className="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 text-white"
+                onClick={() => {
+                  resetForm();
+                  setModalOpen(true);
+                }}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Novo registro
+              </Button>
+
+              <Button variant="outline" className="rounded-2xl" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
             </div>
           </div>
         </div>
@@ -544,35 +793,104 @@ export default function App() {
         {info && <div className="rounded-2xl bg-white p-4 text-sm text-slate-700 shadow-lg">{info}</div>}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Faturamento</span><DollarSign className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{moeda(metricas.faturamento)}</div></CardContent></Card>
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Custos</span><Wallet className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{moeda(metricas.custos)}</div></CardContent></Card>
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Lucro</span><TrendingUp className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{moeda(metricas.lucro)}</div></CardContent></Card>
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Recorrência</span><Target className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{moeda(metricas.recorrencia)}</div></CardContent></Card>
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Leads ativos</span><Users className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{metricas.leads}</div></CardContent></Card>
-          <Card className="rounded-3xl border-0 bg-gradient-to-br from-amber-500 to-yellow-500 text-white shadow-xl"><CardContent className="p-5"><div className="flex items-center justify-between"><span className="text-sm text-white/80">Conversão</span><CheckCircle2 className="h-4 w-4 text-white/80" /></div><div className="mt-3 text-2xl font-black">{metricas.taxa.toFixed(1)}%</div></CardContent></Card>
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Faturamento</span>
+                <DollarSign className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{moeda(metricas.faturamento)}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Custos</span>
+                <Wallet className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{moeda(metricas.custos)}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Lucro</span>
+                <TrendingUp className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{moeda(metricas.lucro)}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Recorrência</span>
+                <Target className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{moeda(metricas.recorrencia)}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Leads ativos</span>
+                <Users className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{metricas.leads}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-3xl border-0 bg-gradient-to-br from-amber-500 to-yellow-500 text-white shadow-xl">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/80">Conversão</span>
+                <CheckCircle2 className="h-4 w-4 text-white/80" />
+              </div>
+              <div className="mt-3 text-2xl font-black">{metricas.taxa.toFixed(1)}%</div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <Card className="rounded-3xl border-0 bg-white shadow-2xl xl:col-span-2">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg"><LayoutDashboard className="h-5 w-5 text-fuchsia-600" /> Visão financeira</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <LayoutDashboard className="h-5 w-5 text-fuchsia-600" />
+                Visão financeira
+              </CardTitle>
             </CardHeader>
+
             <CardContent>
               <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                   <p className="text-sm text-slate-500">Meta do mês</p>
                   <div className="mt-2 flex items-center gap-3">
-                    <Input type="number" value={metaMes} onChange={(e) => setMetaMes(Number(e.target.value || 0))} className="max-w-[180px] rounded-2xl" />
-                    <Button variant="outline" className="rounded-2xl" onClick={saveSettings}>Salvar config</Button>
+                    <Input
+                      type="number"
+                      value={metaMes}
+                      onChange={(e) => setMetaMes(Number(e.target.value || 0))}
+                      className="max-w-[180px] rounded-2xl"
+                    />
+                    <Button variant="outline" className="rounded-2xl" onClick={saveSettings}>
+                      Salvar config
+                    </Button>
                   </div>
                 </div>
+
                 <div className="text-right">
                   <p className="text-sm text-slate-500">Falta para bater a meta</p>
-                  <p className="mt-1 text-xl font-bold">{moeda(Math.max(Number(metaMes || 0) - metricas.faturamento, 0))}</p>
+                  <p className="mt-1 text-xl font-bold">
+                    {moeda(Math.max(Number(metaMes || 0) - metricas.faturamento, 0))}
+                  </p>
                 </div>
               </div>
+
               <Progress value={progressoMeta} className="mb-4" />
               <div className="mb-5 text-sm text-slate-500">Alcançado: {progressoMeta.toFixed(0)}%</div>
+
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={graficoMensal}>
@@ -590,21 +908,27 @@ export default function App() {
 
           <Card className="rounded-3xl border-0 bg-white shadow-2xl">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg"><Funnel className="h-5 w-5 text-blue-600" /> Funil por status</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Funnel className="h-5 w-5 text-blue-600" />
+                Funil por status
+              </CardTitle>
             </CardHeader>
+
             <CardContent>
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={distribuicaoStatus} dataKey="value" nameKey="name" outerRadius={90} innerRadius={50} label>
-                    </Pie>
+                    <Pie data={distribuicaoStatus} dataKey="value" nameKey="name" outerRadius={90} innerRadius={50} label />
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+
               <div className="mt-4 flex flex-wrap gap-2">
                 {distribuicaoStatus.map((item) => (
-                  <Badge key={item.name} variant="outline" className="rounded-xl px-3 py-1">{item.name}: {item.value}</Badge>
+                  <Badge key={item.name} variant="outline" className="rounded-xl px-3 py-1">
+                    {item.name}: {item.value}
+                  </Badge>
                 ))}
               </div>
             </CardContent>
@@ -617,19 +941,36 @@ export default function App() {
               <Tabs defaultValue="clientes" className="w-full">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <TabsList className="grid w-full max-w-md grid-cols-2 rounded-2xl bg-slate-100">
-                    <TabsTrigger value="clientes" className="rounded-2xl">Clientes e vendas</TabsTrigger>
-                    <TabsTrigger value="pipeline" className="rounded-2xl">Pipeline</TabsTrigger>
+                    <TabsTrigger value="clientes" className="rounded-2xl">
+                      Clientes e vendas
+                    </TabsTrigger>
+                    <TabsTrigger value="pipeline" className="rounded-2xl">
+                      Pipeline
+                    </TabsTrigger>
                   </TabsList>
+
                   <div className="flex flex-col gap-3 md:flex-row md:items-center">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <Input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar cliente, canal, tipo..." className="w-full rounded-2xl pl-9 md:w-80" />
+                      <Input
+                        value={busca}
+                        onChange={(e) => setBusca(e.target.value)}
+                        placeholder="Buscar cliente, canal, tipo..."
+                        className="w-full rounded-2xl pl-9 md:w-80"
+                      />
                     </div>
+
                     <Select value={filtroStatus} onValueChange={setFiltroStatus}>
-                      <SelectTrigger className="w-full rounded-2xl md:w-56"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="w-full rounded-2xl md:w-56">
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Todos">Todos os status</SelectItem>
-                        {statusOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
+                        {statusOptions.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -652,28 +993,61 @@ export default function App() {
                           <th className="px-4 py-3 font-medium text-right">Ações</th>
                         </tr>
                       </thead>
+
                       <tbody>
                         {registrosFiltrados.length === 0 && (
                           <tr>
-                            <td colSpan={10} className="px-4 py-10 text-center text-slate-500">Nenhum registro encontrado.</td>
+                            <td colSpan={10} className="px-4 py-10 text-center text-slate-500">
+                              Nenhum registro encontrado.
+                            </td>
                           </tr>
                         )}
+
                         {registrosFiltrados.map((r, index) => (
-                          <tr key={r.id} className={`border-t text-sm ${index % 2 === 0 ? "bg-white" : "bg-slate-50/60"} hover:bg-fuchsia-50/50`}>
-                            <td className="px-4 py-4 font-medium text-slate-900">{r.cliente}<div className="mt-1 text-xs text-slate-500">{r.responsavel}</div></td>
-                            <td className="px-4 py-4"><div>{r.email || "—"}</div><div className="mt-1 text-xs text-slate-500">{r.telefone || "—"}</div></td>
+                          <tr
+                            key={r.id}
+                            className={`border-t text-sm ${index % 2 === 0 ? "bg-white" : "bg-slate-50/60"} hover:bg-fuchsia-50/50`}
+                          >
+                            <td className="px-4 py-4 font-medium text-slate-900">
+                              {r.cliente}
+                              <div className="mt-1 text-xs text-slate-500">{r.responsavel}</div>
+                            </td>
+
+                            <td className="px-4 py-4">
+                              <div>{r.email || "—"}</div>
+                              <div className="mt-1 text-xs text-slate-500">{r.telefone || "—"}</div>
+                            </td>
+
                             <td className="px-4 py-4">{r.tipo}</td>
                             <td className="px-4 py-4">{r.canal}</td>
-                            <td className="px-4 py-4"><Badge className={`rounded-xl border ${statusBadge(r.status)}`}>{r.status}</Badge></td>
+                            <td className="px-4 py-4">
+                              <Badge className={`rounded-xl border ${statusBadge(r.status)}`}>{r.status}</Badge>
+                            </td>
                             <td className="px-4 py-4">{moeda(r.valor)}</td>
-                            <td className="px-4 py-4 font-bold text-emerald-700">{moeda(Number(r.valor || 0) - Number(r.custo || 0))}</td>
+                            <td className="px-4 py-4 font-bold text-emerald-700">
+                              {moeda(Number(r.valor || 0) - Number(r.custo || 0))}
+                            </td>
                             <td className="px-4 py-4">{moeda(r.mensalidade)}</td>
                             <td className="px-4 py-4">{new Date(r.data).toLocaleDateString("pt-BR")}</td>
+
                             <td className="px-4 py-4">
                               <div className="flex items-center justify-end gap-2">
-                                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleEdit(r)}><Pencil className="h-4 w-4" /></Button>
-                                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setRegistroSelecionado(r)}><FileText className="h-4 w-4" /></Button>
-                                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDelete(r.id)}><Trash2 className="h-4 w-4" /></Button>
+                                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleEdit(r)}>
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="rounded-xl"
+                                  onClick={() => setRegistroSelecionado(r)}
+                                >
+                                  <FileText className="h-4 w-4" />
+                                </Button>
+
+                                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDelete(r.id)}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </td>
                           </tr>
@@ -686,10 +1060,26 @@ export default function App() {
                 <TabsContent value="pipeline" className="mt-6">
                   <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
                     {[
-                      { titulo: "Topo", cor: "from-cyan-500 to-sky-500", itens: registros.filter((r) => ["Lead", "Proposta enviada"].includes(r.status)) },
-                      { titulo: "Quente", cor: "from-amber-500 to-orange-500", itens: registros.filter((r) => r.status === "Negociação") },
-                      { titulo: "Fechados", cor: "from-emerald-500 to-green-600", itens: registros.filter((r) => ["Fechado", "Em andamento"].includes(r.status)) },
-                      { titulo: "Entregues", cor: "from-violet-500 to-fuchsia-600", itens: registros.filter((r) => r.status === "Entregue") },
+                      {
+                        titulo: "Topo",
+                        cor: "from-cyan-500 to-sky-500",
+                        itens: registros.filter((r) => ["Lead", "Proposta enviada"].includes(r.status)),
+                      },
+                      {
+                        titulo: "Quente",
+                        cor: "from-amber-500 to-orange-500",
+                        itens: registros.filter((r) => r.status === "Negociação"),
+                      },
+                      {
+                        titulo: "Fechados",
+                        cor: "from-emerald-500 to-green-600",
+                        itens: registros.filter((r) => ["Fechado", "Em andamento"].includes(r.status)),
+                      },
+                      {
+                        titulo: "Entregues",
+                        cor: "from-violet-500 to-fuchsia-600",
+                        itens: registros.filter((r) => r.status === "Entregue"),
+                      },
                     ].map((coluna) => (
                       <Card key={coluna.titulo} className="overflow-hidden rounded-3xl border-0 shadow-xl">
                         <div className={`bg-gradient-to-r ${coluna.cor} p-4 text-white`}>
@@ -698,8 +1088,12 @@ export default function App() {
                             <span>{coluna.itens.length}</span>
                           </div>
                         </div>
+
                         <CardContent className="space-y-3 bg-white p-4">
-                          {coluna.itens.length === 0 && <div className="rounded-2xl border border-dashed p-4 text-sm text-slate-400">Nenhum item aqui</div>}
+                          {coluna.itens.length === 0 && (
+                            <div className="rounded-2xl border border-dashed p-4 text-sm text-slate-400">Nenhum item aqui</div>
+                          )}
+
                           {coluna.itens.map((item) => (
                             <div key={item.id} className="rounded-2xl border bg-white p-4 shadow-sm">
                               <div className="flex items-start justify-between gap-3">
@@ -707,12 +1101,29 @@ export default function App() {
                                   <h3 className="font-semibold text-slate-900">{item.cliente}</h3>
                                   <p className="mt-1 text-sm text-slate-500">{item.tipo}</p>
                                 </div>
-                                <Badge variant="outline" className="rounded-xl">{item.canal}</Badge>
+
+                                <Badge variant="outline" className="rounded-xl">
+                                  {item.canal}
+                                </Badge>
                               </div>
+
                               <div className="mt-4 space-y-2 text-sm">
-                                <div className="flex items-center justify-between"><span className="text-slate-500">Projeto</span><span className="font-medium">{moeda(item.valor)}</span></div>
-                                <div className="flex items-center justify-between"><span className="text-slate-500">Lucro</span><span className="font-medium text-emerald-700">{moeda(Number(item.valor || 0) - Number(item.custo || 0))}</span></div>
-                                <div className="flex items-center justify-between"><span className="text-slate-500">Mensalidade</span><span className="font-medium">{moeda(item.mensalidade)}</span></div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-500">Projeto</span>
+                                  <span className="font-medium">{moeda(item.valor)}</span>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-500">Lucro</span>
+                                  <span className="font-medium text-emerald-700">
+                                    {moeda(Number(item.valor || 0) - Number(item.custo || 0))}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-500">Mensalidade</span>
+                                  <span className="font-medium">{moeda(item.mensalidade)}</span>
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -727,15 +1138,46 @@ export default function App() {
 
           <Card className="rounded-3xl border-0 bg-white shadow-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg"><Globe className="h-5 w-5 text-blue-600" /> Configuração da empresa</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Globe className="h-5 w-5 text-blue-600" />
+                Configuração da empresa
+              </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-3">
-              <div className="space-y-2"><Label>Nome</Label><Input value={empresa.nome} onChange={(e) => setEmpresa({ ...empresa, nome: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>E-mail</Label><Input value={empresa.email} onChange={(e) => setEmpresa({ ...empresa, email: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Telefone</Label><Input value={empresa.telefone} onChange={(e) => setEmpresa({ ...empresa, telefone: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Site</Label><Input value={empresa.site} onChange={(e) => setEmpresa({ ...empresa, site: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Cidade</Label><Input value={empresa.cidade} onChange={(e) => setEmpresa({ ...empresa, cidade: e.target.value })} className="rounded-2xl" /></div>
-              <Button onClick={saveSettings} className="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-fuchsia-600 py-6 text-base text-white">Salvar configurações</Button>
+              <div className="space-y-2">
+                <Label>Nome</Label>
+                <Input value={empresa.nome} onChange={(e) => setEmpresa({ ...empresa, nome: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>E-mail</Label>
+                <Input value={empresa.email} onChange={(e) => setEmpresa({ ...empresa, email: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Telefone</Label>
+                <Input
+                  value={empresa.telefone}
+                  onChange={(e) => setEmpresa({ ...empresa, telefone: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Site</Label>
+                <Input value={empresa.site} onChange={(e) => setEmpresa({ ...empresa, site: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Cidade</Label>
+                <Input value={empresa.cidade} onChange={(e) => setEmpresa({ ...empresa, cidade: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <Button onClick={saveSettings} className="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-fuchsia-600 py-6 text-base text-white">
+                Salvar configurações
+              </Button>
+
               <p className="text-xs text-slate-500">Esses dados entram automaticamente na proposta e no contrato.</p>
             </CardContent>
           </Card>
@@ -746,42 +1188,155 @@ export default function App() {
             <DialogHeader>
               <DialogTitle>{editandoId ? "Editar registro" : "Novo registro"}</DialogTitle>
             </DialogHeader>
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2"><Label>Cliente</Label><Input value={form.cliente} onChange={(e) => setForm({ ...form, cliente: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Responsável</Label><Input value={form.responsavel} onChange={(e) => setForm({ ...form, responsavel: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>E-mail</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Telefone</Label><Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} className="rounded-2xl" /></div>
+              <div className="space-y-2">
+                <Label>Cliente</Label>
+                <Input value={form.cliente} onChange={(e) => setForm({ ...form, cliente: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Responsável</Label>
+                <Input
+                  value={form.responsavel}
+                  onChange={(e) => setForm({ ...form, responsavel: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>E-mail</Label>
+                <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Telefone</Label>
+                <Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} className="rounded-2xl" />
+              </div>
+
               <div className="space-y-2">
                 <Label>Tipo</Label>
                 <Select value={form.tipo} onValueChange={(value) => setForm({ ...form, tipo: value })}>
-                  <SelectTrigger className="rounded-2xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>{tipoOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
+                  <SelectTrigger className="rounded-2xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tipoOptions.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
+
               <div className="space-y-2">
                 <Label>Canal</Label>
                 <Select value={form.canal} onValueChange={(value) => setForm({ ...form, canal: value })}>
-                  <SelectTrigger className="rounded-2xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>{canalOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
+                  <SelectTrigger className="rounded-2xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {canalOptions.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
+
               <div className="space-y-2">
                 <Label>Status</Label>
                 <Select value={form.status} onValueChange={(value) => setForm({ ...form, status: value })}>
-                  <SelectTrigger className="rounded-2xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>{statusOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
+                  <SelectTrigger className="rounded-2xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2"><Label>Data</Label><Input type="date" value={form.data} onChange={(e) => setForm({ ...form, data: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Valor do projeto</Label><Input type="number" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Custo</Label><Input type="number" value={form.custo} onChange={(e) => setForm({ ...form, custo: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Mensalidade</Label><Input type="number" value={form.mensalidade} onChange={(e) => setForm({ ...form, mensalidade: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2"><Label>Prazo</Label><Input value={form.prazo} onChange={(e) => setForm({ ...form, prazo: e.target.value })} className="rounded-2xl" /></div>
-              <div className="space-y-2 md:col-span-2"><Label>Observações</Label><Textarea value={form.observacoes} onChange={(e) => setForm({ ...form, observacoes: e.target.value })} className="rounded-2xl" /></div>
+
+              <div className="space-y-2">
+                <Label>Data</Label>
+                <Input
+                  type="date"
+                  value={form.data}
+                  onChange={(e) => setForm({ ...form, data: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Valor do projeto</Label>
+                <Input
+                  type="number"
+                  value={form.valor}
+                  onChange={(e) => setForm({ ...form, valor: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Custo</Label>
+                <Input
+                  type="number"
+                  value={form.custo}
+                  onChange={(e) => setForm({ ...form, custo: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Mensalidade</Label>
+                <Input
+                  type="number"
+                  value={form.mensalidade}
+                  onChange={(e) => setForm({ ...form, mensalidade: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Prazo</Label>
+                <Input value={form.prazo} onChange={(e) => setForm({ ...form, prazo: e.target.value })} className="rounded-2xl" />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Observações</Label>
+                <Textarea
+                  value={form.observacoes}
+                  onChange={(e) => setForm({ ...form, observacoes: e.target.value })}
+                  className="rounded-2xl"
+                />
+              </div>
             </div>
+
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <Button onClick={saveRecord} disabled={saving} className="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 py-6 text-base text-white"><Save className="mr-2 h-4 w-4" />{saving ? "Salvando..." : editandoId ? "Salvar alterações" : "Criar registro"}</Button>
-              <Button variant="outline" onClick={() => { resetForm(); setModalOpen(false); }} className="rounded-2xl py-6 text-base">Cancelar</Button>
+              <Button
+                onClick={saveRecord}
+                disabled={saving}
+                className="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-blue-600 py-6 text-base text-white"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                {saving ? "Salvando..." : editandoId ? "Salvar alterações" : "Criar registro"}
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  resetForm();
+                  setModalOpen(false);
+                }}
+                className="rounded-2xl py-6 text-base"
+              >
+                Cancelar
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -791,20 +1346,54 @@ export default function App() {
             <DialogHeader>
               <DialogTitle>Proposta e contrato</DialogTitle>
             </DialogHeader>
+
             {registroSelecionado && (
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <Card className="rounded-2xl border-0 shadow-lg">
-                  <CardHeader><CardTitle className="text-base">Proposta comercial</CardTitle></CardHeader>
+                  <CardHeader>
+                    <CardTitle className="text-base">Proposta comercial</CardTitle>
+                  </CardHeader>
                   <CardContent className="space-y-3">
-                    <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-50 p-4 text-xs text-slate-700">{makeProposalText(registroSelecionado, empresa)}</pre>
-                    <Button className="w-full rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white" onClick={() => downloadTextFile(`proposta-${registroSelecionado.cliente}.txt`, makeProposalText(registroSelecionado, empresa))}><Download className="mr-2 h-4 w-4" />Baixar proposta</Button>
+                    <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-50 p-4 text-xs text-slate-700">
+                      {makeProposalText(registroSelecionado, empresa)}
+                    </pre>
+
+                    <Button
+                      className="w-full rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white"
+                      onClick={() =>
+                        downloadTextFile(
+                          `proposta-${registroSelecionado.cliente}.txt`,
+                          makeProposalText(registroSelecionado, empresa)
+                        )
+                      }
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar proposta
+                    </Button>
                   </CardContent>
                 </Card>
+
                 <Card className="rounded-2xl border-0 shadow-lg">
-                  <CardHeader><CardTitle className="text-base">Contrato</CardTitle></CardHeader>
+                  <CardHeader>
+                    <CardTitle className="text-base">Contrato</CardTitle>
+                  </CardHeader>
                   <CardContent className="space-y-3">
-                    <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-50 p-4 text-xs text-slate-700">{makeContractText(registroSelecionado, empresa)}</pre>
-                    <Button className="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white" onClick={() => downloadTextFile(`contrato-${registroSelecionado.cliente}.txt`, makeContractText(registroSelecionado, empresa))}><Download className="mr-2 h-4 w-4" />Baixar contrato</Button>
+                    <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-50 p-4 text-xs text-slate-700">
+                      {makeContractText(registroSelecionado, empresa)}
+                    </pre>
+
+                    <Button
+                      className="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+                      onClick={() =>
+                        downloadTextFile(
+                          `contrato-${registroSelecionado.cliente}.txt`,
+                          makeContractText(registroSelecionado, empresa)
+                        )
+                      }
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar contrato
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
