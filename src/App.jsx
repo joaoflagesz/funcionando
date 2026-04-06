@@ -105,7 +105,63 @@ export default function App() {
     } catch (err) { setInfo(err.message || 'Erro ao carregar dados.') } finally { setLoading(false) }
   }
 
-  useEffect(() => { const start = async () => { if (!HAS_SUPABASE) return bootstrapDemo(); const { data } = await supabase.auth.getSession(); const currentUser = data.session?.user || null; setUser(currentUser); if (currentUser) await loadData(currentUser); else setLoading(false); const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => { const nextUser = session?.user || null; setUser(nextUser); if (nextUser) await loadData(nextUser); else { setRegistros([]); setLoading(false) } }); return () => authListener.subscription.unsubscribe() }; start() }, [])
+useEffect(() => {
+  let mounted = true;
+  let subscription = null;
+
+  const init = async () => {
+    try {
+      if (!HAS_SUPABASE) {
+        if (mounted) bootstrapDemo();
+        return;
+      }
+
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+
+      const currentUser = data.session?.user || null;
+
+      if (!mounted) return;
+
+      setUser(currentUser);
+
+      if (currentUser) {
+        await loadData(currentUser);
+      } else {
+        setRegistros([]);
+        setLoading(false);
+      }
+
+      const listener = supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (!mounted) return;
+
+        const nextUser = session?.user || null;
+        setUser(nextUser);
+
+        if (nextUser) {
+          await loadData(nextUser);
+        } else {
+          setRegistros([]);
+          setLoading(false);
+        }
+      });
+
+      subscription = listener.data.subscription;
+    } catch (err) {
+      if (mounted) {
+        setInfo(err.message || "Erro ao iniciar sessão.");
+        setLoading(false);
+      }
+    }
+  };
+
+  init();
+
+  return () => {
+    mounted = false;
+    if (subscription) subscription.unsubscribe();
+  };
+}, []);
   useEffect(() => { if (!HAS_SUPABASE) localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(registros)) }, [registros])
   useEffect(() => { if (!HAS_SUPABASE) localStorage.setItem(DEMO_SETTINGS_KEY, JSON.stringify({ empresa, metaMes })) }, [empresa, metaMes])
 
